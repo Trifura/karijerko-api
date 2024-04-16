@@ -12,6 +12,7 @@ import { ScheduleTagModule } from './schedule-tag/schedule-tag.module';
 import { SupplementalPayModule } from './supplemental-pay/supplemental-pay.module';
 import { BenefitModule } from './benefit/benefit.module';
 import { ExperienceLevelModule } from './experience-level/experience-level.module';
+import { SkillModule } from './skill/skill.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ExperienceLevelModule } from './experience-level/experience-level.modul
     SupplementalPayModule,
     BenefitModule,
     ExperienceLevelModule,
+    SkillModule,
   ],
   controllers: [AppController],
   providers: [AppService],

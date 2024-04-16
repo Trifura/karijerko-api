@@ -14,9 +14,11 @@ import { ScheduleTag } from '../../schedule-tag/entities/schedule-tag.entity';
 import { SupplementalPay } from '../../supplemental-pay/entities/supplemental-pay.entity';
 import { Benefit } from '../../benefit/entities/benefit.entity';
 import { ExperienceLevel } from '../../experience-level/entities/experience-level.entity';
+import { Skill } from '../../skill/entities/skill.entity';
+import { BaseEntity } from '../../../common/BaseEntity';
 
 @Entity('job_ad') // Set the table name
-export class JobAd {
+export class JobAd extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -24,39 +26,45 @@ export class JobAd {
   title: string;
 
   @Column({ nullable: false })
+  company: string;
+
+  @Column({ name: 'ad_url', nullable: false })
+  adUrl: string;
+
+  @Column({ nullable: false })
   description: string;
 
-  @Column({ type: 'datetime', nullable: false })
+  @Column({ type: 'timestamptz', nullable: false })
   deadline: Date;
 
-  @Column({ nullable: true })
-  numToHire?: number;
+  @Column({ name: 'num_to_hire', nullable: true })
+  numToHire: number;
 
   @Column({ nullable: false })
   address: string;
 
-  @Column({ nullable: false, default: false })
+  @Column({ name: 'show_address', nullable: false, default: false })
   showAddress: boolean;
 
-  @Column({ nullable: false, default: false })
+  @Column({ name: 'will_relocate', nullable: false, default: false })
   willRelocate: boolean;
 
-  @Column({ nullable: true })
-  hoursMin?: number;
+  @Column({ name: 'hours_min', nullable: true })
+  hoursMin: number;
 
-  @Column({ nullable: true })
-  hoursMax?: number;
+  @Column({ name: 'hours_max', nullable: true })
+  hoursMax: number;
 
-  @Column({ nullable: true })
-  hoursFixed?: number;
+  @Column({ name: 'hours_fixed', nullable: true })
+  hoursFixed: number;
 
-  @Column({ nullable: true })
+  @Column({ name: 'pay_min', nullable: true })
   payMin?: number;
 
-  @Column({ nullable: true })
+  @Column({ name: 'pay_max', nullable: true })
   payMax?: number;
 
-  @Column({ nullable: true })
+  @Column({ name: 'pay_fixed', nullable: true })
   payFixed?: number;
 
   @ManyToOne(() => PayRate, (payRateEntity) => payRateEntity.jobAds)
@@ -65,7 +73,9 @@ export class JobAd {
 
   // ManyToMany relationships
 
-  @ManyToMany(() => LocationType) // Replace with your LocationType entity
+  @ManyToMany(() => LocationType, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_location_types',
     joinColumn: { name: 'job_ad_id' },
@@ -73,7 +83,9 @@ export class JobAd {
   })
   locationTypes: LocationType[];
 
-  @ManyToMany(() => JobType) // Replace with your JobType entity
+  @ManyToMany(() => JobType, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_job_types',
     joinColumn: { name: 'job_ad_id' },
@@ -81,7 +93,9 @@ export class JobAd {
   })
   jobTypes: JobType[];
 
-  @ManyToMany(() => ScheduleTag) // Replace with your ScheduleTag entity
+  @ManyToMany(() => ScheduleTag, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_schedule_tags',
     joinColumn: { name: 'job_ad_id' },
@@ -89,7 +103,9 @@ export class JobAd {
   })
   scheduleTags: ScheduleTag[];
 
-  @ManyToMany(() => SupplementalPay) // Replace with your SupplementalPay entity
+  @ManyToMany(() => SupplementalPay, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_supplemental_pay',
     joinColumn: { name: 'job_ad_id' },
@@ -97,7 +113,9 @@ export class JobAd {
   })
   supplementalPay: SupplementalPay[];
 
-  @ManyToMany(() => Benefit) // Replace with your Benefit entity
+  @ManyToMany(() => Benefit, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_benefits',
     joinColumn: { name: 'job_ad_id' },
@@ -105,11 +123,23 @@ export class JobAd {
   })
   benefits: Benefit[];
 
-  @ManyToMany(() => ExperienceLevel) // Replace with your ExperienceLevel entity
+  @ManyToMany(() => ExperienceLevel, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'job_ad_experience_levels',
     joinColumn: { name: 'job_ad_id' },
     inverseJoinColumn: { name: 'experience_level_id' },
   })
   experienceLevels: ExperienceLevel[];
+
+  @ManyToMany(() => Skill, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'job_ad_skills',
+    joinColumn: { name: 'job_ad_id' },
+    inverseJoinColumn: { name: 'skill_id' },
+  })
+  skills: Skill[];
 }

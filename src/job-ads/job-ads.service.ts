@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateJobAdDto } from './dto/create-job-ad.dto';
 import { UpdateJobAdDto } from './dto/update-job-ad.dto';
+import { JobAd } from './entities/job-ad.entity';
 
 @Injectable()
 export class JobAdsService {
   create(createJobAdDto: CreateJobAdDto) {
-    return 'This action adds a new jobAd';
+    return new JobAd();
   }
 
   findAll() {

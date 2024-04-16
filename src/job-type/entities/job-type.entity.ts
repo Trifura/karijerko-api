@@ -1,16 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity } from 'typeorm';
+import { BaseProperty } from '../../../common/BaseProperty';
 
 @Entity('job_type')
-export class JobType {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ nullable: false })
-  slug: string;
-
-  @Column({ nullable: false })
-  nameEn: string;
-
-  @Column({ nullable: false })
-  nameHr: string;
-}
+export class JobType extends BaseProperty {}
