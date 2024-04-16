@@ -10,7 +10,6 @@ COPY . .
 
 RUN npm run build
 
-
 EXPOSE 3000
 
 FROM node:18-alpine
@@ -18,6 +17,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
 
-CMD [ "npm", "run", "start:prod"]
+CMD ["npm", "run", "start:prod"]
