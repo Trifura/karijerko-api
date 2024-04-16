@@ -65,4 +65,28 @@ export class CreateJobAdDto {
   @IsNumber()
   @IsOptional()
   payFixed: number;
+
+  @IsOptional()
+  scheduleTagIds: number[];
+
+  @IsOptional()
+  locationTypeIds: number[];
+
+  @IsOptional()
+  benefitIds: number[];
+
+  @IsOptional()
+  skillIds: number[];
+
+  @IsOptional()
+  experienceLevelIds: number[];
+
+  @IsOptional()
+  supplementalPayIds: number[];
+
+  @IsOptional()
+  jobTypeIds: number[];
+
+  @IsOptional()
+  payRateId: number;
 }
