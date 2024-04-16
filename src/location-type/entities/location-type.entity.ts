@@ -1,5 +1,5 @@
 import { Entity } from 'typeorm';
-import { BaseProperty } from '../../../common/BaseProperty';
+import { BaseProperty } from '../../database/common/BaseProperty';
 
 @Entity('location_type')
 export class LocationType extends BaseProperty {}

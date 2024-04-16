@@ -27,16 +27,16 @@ export class JobAdsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.jobAdsService.findOne(+id);
+    return this.jobAdsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJobAdDto: UpdateJobAdDto) {
-    return this.jobAdsService.update(+id, updateJobAdDto);
+    return this.jobAdsService.update(id, updateJobAdDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.jobAdsService.remove(+id);
+    return this.jobAdsService.remove(id);
   }
 }

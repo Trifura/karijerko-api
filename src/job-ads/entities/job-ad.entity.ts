@@ -15,7 +15,7 @@ import { SupplementalPay } from '../../supplemental-pay/entities/supplemental-pa
 import { Benefit } from '../../benefit/entities/benefit.entity';
 import { ExperienceLevel } from '../../experience-level/entities/experience-level.entity';
 import { Skill } from '../../skill/entities/skill.entity';
-import { BaseEntity } from '../../../common/BaseEntity';
+import { BaseEntity } from '../../database/common/BaseEntity';
 
 @Entity('job_ad') // Set the table name
 export class JobAd extends BaseEntity {
@@ -34,13 +34,13 @@ export class JobAd extends BaseEntity {
   @Column({ nullable: false })
   description: string;
 
-  @Column({ type: 'timestamptz', nullable: false })
+  @Column({ type: 'timestamptz', nullable: true })
   deadline: Date;
 
   @Column({ name: 'num_to_hire', nullable: true })
   numToHire: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   address: string;
 
   @Column({ name: 'show_address', nullable: false, default: false })
