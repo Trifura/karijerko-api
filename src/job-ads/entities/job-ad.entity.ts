@@ -61,24 +61,18 @@ export class JobAd extends BaseEntity {
   @Column('decimal', {
     name: 'pay_min',
     nullable: true,
-    precision: 2,
-    scale: 2,
   })
   payMin?: number;
 
   @Column('decimal', {
     name: 'pay_max',
     nullable: true,
-    precision: 2,
-    scale: 2,
   })
   payMax?: number;
 
   @Column('decimal', {
     name: 'pay_fixed',
     nullable: true,
-    precision: 2,
-    scale: 2,
   })
   payFixed?: number;
 
