@@ -17,13 +17,13 @@ export class Company {
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   profilePicture: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   tagline: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   description: string;
 
   @Column({ nullable: true })
@@ -38,7 +38,7 @@ export class Company {
   @ManyToOne(() => CompanySize, (companySize) => companySize.companies)
   companySize: CompanySize;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   headquarters: string;
 
   @Column({ type: 'timestamptz', nullable: true })
