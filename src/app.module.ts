@@ -4,16 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { JobAdsModule } from './job-ads/job-ads.module';
-import { PayRateModule } from './pay-rate/pay-rate.module';
-import { LocationTypeModule } from './location-type/location-type.module';
-import { JobTypeModule } from './job-type/job-type.module';
-import { ScheduleTagModule } from './schedule-tag/schedule-tag.module';
-import { SupplementalPayModule } from './supplemental-pay/supplemental-pay.module';
-import { BenefitModule } from './benefit/benefit.module';
-import { ExperienceLevelModule } from './experience-level/experience-level.module';
-import { SkillModule } from './skill/skill.module';
-
+import { CompanyModule } from './company/company.module';
+import { CompanySizeModule } from './company_size/company_size.module';
+import { OfficeLocationModule } from './office_location/office_location.module';
+import { IndustryModule } from './industry/industry.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,15 +25,10 @@ import { SkillModule } from './skill/skill.module';
         synchronize: true,
       }),
     }),
-    JobAdsModule,
-    PayRateModule,
-    LocationTypeModule,
-    JobTypeModule,
-    ScheduleTagModule,
-    SupplementalPayModule,
-    BenefitModule,
-    ExperienceLevelModule,
-    SkillModule,
+    CompanyModule,
+    CompanySizeModule,
+    OfficeLocationModule,
+    IndustryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
