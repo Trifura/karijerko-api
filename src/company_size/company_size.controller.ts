@@ -27,7 +27,7 @@ export class CompanySizeController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.companySizeService.findOne(+id);
+    return this.companySizeService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class CompanySizeController {
     @Param('id') id: string,
     @Body() updateCompanySizeDto: UpdateCompanySizeDto,
   ) {
-    return this.companySizeService.update(+id, updateCompanySizeDto);
+    return this.companySizeService.update(id, updateCompanySizeDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.companySizeService.remove(+id);
+    return this.companySizeService.remove(id);
   }
 }
