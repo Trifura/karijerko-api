@@ -1,8 +1,9 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { Company } from '../../company/entities/company.entity';
+import { BaseEntity } from '../../common/BaseEntity';
 
 @Entity('company_size')
-export class CompanySize {
+export class CompanySize extends BaseEntity {
   @PrimaryColumn({ name: 'id' })
   id: string;
 

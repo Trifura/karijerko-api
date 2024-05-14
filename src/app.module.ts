@@ -8,6 +8,8 @@ import { CompanyModule } from './company/company.module';
 import { CompanySizeModule } from './company_size/company_size.module';
 import { OfficeLocationModule } from './office_location/office_location.module';
 import { IndustryModule } from './industry/industry.module';
+import { AccountModule } from './account/account.module';
+import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -29,6 +31,8 @@ import { IndustryModule } from './industry/industry.module';
     CompanySizeModule,
     OfficeLocationModule,
     IndustryModule,
+    AccountModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

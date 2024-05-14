@@ -8,9 +8,10 @@ import {
 import { Industry } from '../../industry/entities/industry.entity';
 import { CompanySize } from '../../company_size/entities/company_size.entity';
 import { OfficeLocation } from '../../office_location/entities/office_location.entity';
+import { BaseEntity } from '../../common/BaseEntity';
 
 @Entity('company')
-export class Company {
+export class Company extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

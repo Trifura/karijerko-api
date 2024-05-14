@@ -6,9 +6,10 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Company } from '../../company/entities/company.entity';
+import { BaseEntity } from '../../common/BaseEntity';
 
 @Entity('office_location')
-export class OfficeLocation {
+export class OfficeLocation extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
