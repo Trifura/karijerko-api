@@ -2,7 +2,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   IsUrl,
   MinLength,
   IsPhoneNumber,
@@ -11,26 +10,22 @@ import {
 } from 'class-validator';
 
 export class CreateCompanyDto {
-  @IsUUID()
-  @IsNotEmpty()
-  id: string;
-
   @IsString()
   @MinLength(1)
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  profilePicture: string;
+  profilePicture?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  tagline: string;
+  tagline?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  description?: string;
 
   @IsUrl()
   @IsOptional()
@@ -40,17 +35,17 @@ export class CreateCompanyDto {
   @IsOptional()
   phone?: string;
 
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  industryId: number;
+  industryId?: number;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  companySizeId: string;
+  companySizeId?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  headquarters: string;
+  headquarters?: string;
 
   @IsDate()
   @IsOptional()

@@ -10,11 +10,12 @@ import { OfficeLocationModule } from './office_location/office_location.module';
 import { IndustryModule } from './industry/industry.module';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule.forRoot()],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
@@ -33,6 +34,7 @@ import { UserModule } from './user/user.module';
     IndustryModule,
     AccountModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

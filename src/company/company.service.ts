@@ -19,13 +19,17 @@ export class CompanyService {
   async create(createCompanyDto: CreateCompanyDto) {
     const company = this.companyRepository.create(createCompanyDto);
 
-    company.industry = await this.industryService.findOne(
-      createCompanyDto.industryId,
-    );
+    if (createCompanyDto.industryId) {
+      company.industry = await this.industryService.findOne(
+        createCompanyDto.industryId,
+      );
+    }
 
-    company.companySize = await this.companySizeService.findOne(
-      createCompanyDto.companySizeId,
-    );
+    if (createCompanyDto.companySizeId) {
+      company.companySize = await this.companySizeService.findOne(
+        createCompanyDto.companySizeId,
+      );
+    }
 
     return this.companyRepository.save(company);
   }

@@ -14,5 +14,6 @@ import { CompanySizeModule } from '../company_size/company_size.module';
   ],
   controllers: [CompanyController],
   providers: [CompanyService],
+  exports: [CompanyService],
 })
 export class CompanyModule {}

@@ -9,22 +9,26 @@ import { Industry } from '../../industry/entities/industry.entity';
 import { CompanySize } from '../../company_size/entities/company_size.entity';
 import { OfficeLocation } from '../../office_location/entities/office_location.entity';
 import { BaseEntity } from '../../common/BaseEntity';
+import { Account } from '../../account/entities/account.entity';
 
 @Entity('company')
 export class Company extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @OneToMany(() => Account, (account) => account.company)
+  accounts: Account[];
+
+  @Column({ unique: true, nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @Column({ name: 'profile_picture', nullable: true })
   profilePicture: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   tagline: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   description: string;
 
   @Column({ nullable: true })
@@ -33,20 +37,20 @@ export class Company extends BaseEntity {
   @Column({ nullable: true })
   phone: string;
 
+  @Column({ nullable: true })
+  headquarters: string;
+
+  @Column({ name: 'founded_at', type: 'timestamptz', nullable: true })
+  foundedAt: Date;
+
+  @Column({ nullable: true })
+  specialties: string;
+
   @ManyToOne(() => Industry, (industry) => industry.companies)
   industry: Industry;
 
   @ManyToOne(() => CompanySize, (companySize) => companySize.companies)
   companySize: CompanySize;
-
-  @Column({ nullable: false })
-  headquarters: string;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  foundedAt: Date;
-
-  @Column({ nullable: true })
-  specialties: string;
 
   @OneToMany(() => OfficeLocation, (officeLocation) => officeLocation.company)
   officeLocations: OfficeLocation[];
