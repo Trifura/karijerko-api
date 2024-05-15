@@ -12,8 +12,4 @@ export class RegisterCompanyDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  industryId: number;
 }
