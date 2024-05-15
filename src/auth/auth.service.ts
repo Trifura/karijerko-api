@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Account } from '../account/entities/account.entity';
 import { Company } from '../company/entities/company.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,11 +15,22 @@ export class AuthService {
     private dataSource: DataSource,
   ) {}
 
-  async login(email: string, pass: string): Promise<any> {
+  async login(email: string, password: string): Promise<any> {
     const account = await this.accountService.findOne(email);
 
-    if (!account || account.password !== pass) {
-      throw new UnauthorizedException();
+    // TODO: handle if google exists but local account doesn't
+    if (!account || !account.password) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isMatch = await bcrypt.compare(password, account.password);
+
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!account.isVerified) {
+      throw new UnauthorizedException('Account not verified');
     }
 
     const payload = { email: account.email, id: account.id };
@@ -40,9 +52,11 @@ export class AuthService {
         name,
       });
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       await queryRunner.manager.save(Account, {
         email,
-        password,
+        password: hashedPassword,
         company,
         role: 'company',
         isVerified: false,
@@ -78,9 +92,11 @@ export class AuthService {
         lastName,
       });
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       await queryRunner.manager.save(Account, {
         email,
-        password,
+        password: hashedPassword,
         user,
         role: 'user',
         isVerified: false,
