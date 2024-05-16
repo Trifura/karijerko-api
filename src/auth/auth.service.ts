@@ -84,7 +84,7 @@ export class AuthService {
     });
 
     if (userAccount.length) {
-      throw new BadRequestException('Company already registered');
+      throw new BadRequestException('User already registered');
     }
 
     registerUserDto.password = await bcrypt.hash(registerUserDto.password, 10);
