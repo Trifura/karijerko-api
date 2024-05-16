@@ -16,8 +16,8 @@ export class AccountService {
     return this.accountRepository.save(account);
   }
 
-  findAll() {
-    return `This action returns all account`;
+  findAll(query?: any) {
+    return this.accountRepository.find(query);
   }
 
   findOne(email: string) {

@@ -8,10 +8,11 @@ export class Account extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  // TODO: add unique constraint if providerType is not the same
+  @Column({ nullable: false })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ name: 'role', nullable: false })
@@ -20,11 +21,11 @@ export class Account extends BaseEntity {
   @Column({ name: 'is_verified', default: false })
   isVerified: boolean;
 
-  @Column({ name: 'external_type', nullable: true })
-  externalType: string;
+  @Column({ name: 'provider_type', nullable: true })
+  providerType: string;
 
-  @Column({ name: 'external_id', nullable: true })
-  externalId: string;
+  @Column({ name: 'provider_id', nullable: true })
+  providerId: string;
 
   @ManyToOne(() => User, (user) => user.accounts)
   user: User;

@@ -13,7 +13,7 @@ export class CreateAccountDto {
   email: string;
 
   @IsString()
-  password: string;
+  password?: string;
 
   @IsEnum(['company', 'user'])
   role: string;
@@ -22,11 +22,11 @@ export class CreateAccountDto {
   isVerified: boolean;
 
   @IsOptional()
-  @IsEnum(['local', 'google'])
-  externalType?: string;
+  @IsEnum(['google'])
+  providerType?: string;
 
   @IsOptional()
-  externalId?: string;
+  providerId?: string;
 
   @IsOptional()
   user?: User;

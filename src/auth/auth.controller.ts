@@ -15,26 +15,17 @@ export class AuthController {
 
   @Post('register/company')
   registerCompany(@Body() registerCompanyDto: RegisterCompanyDto) {
-    return this.authService.registerCompany(
-      registerCompanyDto.email,
-      registerCompanyDto.password,
-      registerCompanyDto.name,
-    );
+    return this.authService.registerCompany(registerCompanyDto);
   }
 
   @Post('register/user')
   registerUser(@Body() registerUserDto: RegisterUserDto) {
-    return this.authService.registerUser(
-      registerUserDto.email,
-      registerUserDto.password,
-      registerUserDto.firstName,
-      registerUserDto.lastName,
-    );
+    return this.authService.registerUser(registerUserDto);
   }
 
   // Google login
   @Post('google')
-  handleGoogleLogin(@Body() body: { accessToken: string }) {
-    return { msg: body.accessToken };
+  handleGoogleLogin(@Body() body: { accessToken: string; role: string }) {
+    return this.authService.authenticateGoogle(body.accessToken, body.role);
   }
 }
