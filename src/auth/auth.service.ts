@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource, IsNull, QueryRunner } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Account } from '../account/entities/account.entity';
 import { Company } from '../company/entities/company.entity';
@@ -204,8 +204,10 @@ export class AuthService {
 
   private async checkAccountExists(email: string) {
     const account = await this.accountService.findAll({
-      where: { email, providerType: null },
+      where: { email, providerType: IsNull() },
     });
+
+    console.log(account);
     if (account.length) {
       throw new BadRequestException('Account already registered');
     }
