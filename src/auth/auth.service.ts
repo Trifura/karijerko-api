@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Account } from '../account/entities/account.entity';
 import { Company } from '../company/entities/company.entity';
 import * as bcrypt from 'bcrypt';
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { RegisterCompanyDto } from './dto/register-company.dto';
@@ -34,13 +34,11 @@ export class AuthService {
   async login(email: string, password: string): Promise<any> {
     const account = await this.accountService.findOne(email);
 
-    // TODO: handle if google exists but local account doesn't
     if (!account || !account.password) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const isMatch = await bcrypt.compare(password, account.password);
-
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -50,48 +48,29 @@ export class AuthService {
     }
 
     const payload = { email: account.email, id: account.id };
-
-    return {
-      token: await this.signToken(payload),
-    };
+    return { token: await this.signToken(payload) };
   }
 
   async registerCompany(registerCompanyDto: RegisterCompanyDto) {
-    // check if the company exists in the database by email
-    const companyAccount = await this.accountService.findAll({
-      where: { email: registerCompanyDto.email, providerType: null },
-    });
+    await this.checkAccountExists(registerCompanyDto.email);
 
-    if (companyAccount.length) {
-      throw new BadRequestException('Company already registered');
-    }
-
-    registerCompanyDto.password = await bcrypt.hash(
+    registerCompanyDto.password = await this.hashPassword(
       registerCompanyDto.password,
-      10,
     );
-
     const company = await this.createCompanyAccount(registerCompanyDto, false);
     console.log(company);
-    // send verification email to the company
 
     return { message: 'Company registered successfully' };
   }
 
   async registerUser(registerUserDto: RegisterUserDto) {
-    const userAccount = await this.accountService.findAll({
-      where: { email: registerUserDto.email, providerType: null },
-    });
+    await this.checkAccountExists(registerUserDto.email);
 
-    if (userAccount.length) {
-      throw new BadRequestException('User already registered');
-    }
-
-    registerUserDto.password = await bcrypt.hash(registerUserDto.password, 10);
-
+    registerUserDto.password = await this.hashPassword(
+      registerUserDto.password,
+    );
     const user = await this.createUserAccount(registerUserDto, false);
     console.log(user);
-    // send verification email to the user
 
     return { message: 'User registered successfully' };
   }
@@ -99,64 +78,33 @@ export class AuthService {
   async authenticateGoogle(accessToken: string, role: string) {
     const profile = await this.verifyGoogleToken(accessToken);
 
-    // check if the profile (account) exists in the database by email
     const accounts = await this.accountService.findAll({
       where: { email: profile.email },
       relations: ['user', 'company'],
     });
 
-    // if it doesn't exist, create an account and user/company entity and return JWT
     if (!accounts.length) {
-      // if it doesn't exist, create an account and user/company entity and return JWT
-      // if it's a company, create a company entity
-      // if it's a user, create a user entity
-
-      let account: Account;
-
-      if (role === 'user') {
-        account = await this.createUserAccount(
-          {
-            firstName: profile.given_name,
-            lastName: profile.family_name,
-            email: profile.email,
-          },
-          true,
-          { providerType: 'google', providerId: profile.sub },
-        );
-      } else if (role === 'company') {
-        account = await this.createCompanyAccount(
-          {
-            name: profile.name,
-            email: profile.email,
-          },
-          true,
-          { providerType: 'google', providerId: profile.sub },
-        );
-      }
+      const account = await this.createAccountFromGoogleProfile(profile, role);
 
       return {
         token: await this.signToken({ email: account.email, id: account.id }),
       };
     }
 
-    // if it exists, and it's the same provider, return JWT
     const providerAccount = accounts.find(
       (account) => account.providerType === 'google',
     );
 
     if (providerAccount) {
-      const payload = { email: providerAccount.email, id: providerAccount.id };
       return {
-        token: await this.signToken(payload),
+        token: await this.signToken({
+          email: providerAccount.email,
+          id: providerAccount.id,
+        }),
       };
     }
 
-    // if it exists, but it's a different provider, create an account entity and return JWT
     const otherProviderAccount = accounts[0];
-
-    if (otherProviderAccount.role === 'company') {
-    }
-
     const account = await this.accountService.create({
       email: profile.email,
       providerType: 'google',
@@ -167,45 +115,41 @@ export class AuthService {
       company: otherProviderAccount.company,
     });
 
-    const payload = { email: account.email, id: account.id };
     return {
-      token: await this.signToken(payload),
+      token: await this.signToken({ email: account.email, id: account.id }),
     };
   }
 
-  async verifyGoogleToken(accessToken: string) {
-    const ticket = await this.googleClient.verifyIdToken({
-      idToken: accessToken,
-      audience: this.configService.get('GOOGLE_OAUTH_CLIENT_ID'),
-    });
-    const payload = ticket.getPayload();
-    if (!payload) {
+  private async verifyGoogleToken(accessToken: string) {
+    try {
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken: accessToken,
+        audience: this.configService.get('GOOGLE_OAUTH_CLIENT_ID'),
+      });
+      const payload = ticket.getPayload();
+      if (!payload) {
+        throw new UnauthorizedException('Invalid Google token');
+      }
+      return payload;
+    } catch (e) {
       throw new UnauthorizedException('Invalid Google token');
     }
-    return payload;
   }
 
-  async signToken(payload: { email: string; id: number }) {
+  private async signToken(payload: { email: string; id: number }) {
     return await this.jwtService.signAsync(payload);
   }
 
-  async createUserAccount(
+  private async createUserAccount(
     { firstName, lastName, password, email }: RegisterUserDto,
     isVerified: boolean,
     authProvider?: AuthProviderDto,
   ) {
-    // Make this transactional because if one entity fails,
-    // so it doesn't save the other entity without the relationship
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
+    return await this.createAccountTransactional(async (queryRunner) => {
       const user = await queryRunner.manager.save(User, {
         firstName,
         lastName,
       });
-
       const account = await queryRunner.manager.save(Account, {
         email,
         password,
@@ -215,33 +159,17 @@ export class AuthService {
         providerType: authProvider?.providerType,
         providerId: authProvider?.providerId,
       });
-      await queryRunner.commitTransaction();
-
       return account;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 
-  async createCompanyAccount(
+  private async createCompanyAccount(
     { name, password, email }: RegisterCompanyDto,
     isVerified: boolean,
     authProvider?: AuthProviderDto,
   ) {
-    // Make this transactional because if one entity fails,
-    // so it doesn't save the other entity without the relationship
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const company = await queryRunner.manager.save(Company, {
-        name,
-      });
-
+    return await this.createAccountTransactional(async (queryRunner) => {
+      const company = await queryRunner.manager.save(Company, { name });
       const account = await queryRunner.manager.save(Account, {
         email,
         password,
@@ -251,8 +179,20 @@ export class AuthService {
         providerType: authProvider?.providerType,
         providerId: authProvider?.providerId,
       });
-      await queryRunner.commitTransaction();
+      return account;
+    });
+  }
 
+  private async createAccountTransactional(
+    callback: (queryRunner: QueryRunner) => Promise<Account>,
+  ): Promise<Account> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const account = await callback(queryRunner);
+      await queryRunner.commitTransaction();
       return account;
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -260,5 +200,46 @@ export class AuthService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async checkAccountExists(email: string) {
+    const account = await this.accountService.findAll({
+      where: { email, providerType: null },
+    });
+    if (account.length) {
+      throw new BadRequestException('Account already registered');
+    }
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
+  }
+
+  private async createAccountFromGoogleProfile(
+    profile: TokenPayload,
+    role: string,
+  ): Promise<Account> {
+    if (role === 'user') {
+      return await this.createUserAccount(
+        {
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          email: profile.email,
+        },
+        true,
+        { providerType: 'google', providerId: profile.sub },
+      );
+    } else if (role === 'company') {
+      return await this.createCompanyAccount(
+        {
+          name: profile.name,
+          email: profile.email,
+        },
+        true,
+        { providerType: 'google', providerId: profile.sub },
+      );
+    }
+
+    throw new BadRequestException('Invalid role');
   }
 }
