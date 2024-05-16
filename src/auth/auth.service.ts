@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { DataSource } from 'typeorm';
@@ -53,6 +57,15 @@ export class AuthService {
   }
 
   async registerCompany(registerCompanyDto: RegisterCompanyDto) {
+    // check if the company exists in the database by email
+    const companyAccount = await this.accountService.findAll({
+      where: { email: registerCompanyDto.email, providerType: null },
+    });
+
+    if (companyAccount.length) {
+      throw new BadRequestException('Company already registered');
+    }
+
     registerCompanyDto.password = await bcrypt.hash(
       registerCompanyDto.password,
       10,
@@ -66,6 +79,14 @@ export class AuthService {
   }
 
   async registerUser(registerUserDto: RegisterUserDto) {
+    const userAccount = await this.accountService.findAll({
+      where: { email: registerUserDto.email, providerType: null },
+    });
+
+    if (userAccount.length) {
+      throw new BadRequestException('Company already registered');
+    }
+
     registerUserDto.password = await bcrypt.hash(registerUserDto.password, 10);
 
     const user = await this.createUserAccount(registerUserDto, false);

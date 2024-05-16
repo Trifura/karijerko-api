@@ -19,7 +19,7 @@ export class Company extends BaseEntity {
   @OneToMany(() => Account, (account) => account.company)
   accounts: Account[];
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
   name: string;
 
   @Column({ name: 'profile_picture', nullable: true })
