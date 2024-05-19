@@ -1,10 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Account } from '../../account/entities/account.entity';
 import { BaseEntity } from '../../common/BaseEntity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
 
   @OneToMany(() => Account, (account) => account.user)

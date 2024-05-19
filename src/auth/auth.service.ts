@@ -131,6 +131,15 @@ export class AuthService {
     };
   }
 
+  getProfile(account: Account) {
+    console.log(account);
+    return this.createAccountPayload(account);
+  }
+
+  /**
+   * Private methods
+   */
+
   private async verifyGoogleToken(accessToken: string) {
     try {
       const ticket = await this.googleClient.verifyIdToken({

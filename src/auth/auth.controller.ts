@@ -1,10 +1,12 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
   Request,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -37,9 +39,10 @@ export class AuthController {
     return this.authService.authenticateGoogle(body.accessToken, body.role);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(AuthGuard)
   @Get('me')
   getProfile(@Request() req: any) {
-    return req.account;
+    return this.authService.getProfile(req.account);
   }
 }
