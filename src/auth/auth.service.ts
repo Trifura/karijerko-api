@@ -39,6 +39,7 @@ export class AuthService {
     }
 
     const isMatch = await bcrypt.compare(password, account.password);
+
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -48,7 +49,11 @@ export class AuthService {
     }
 
     const payload = { email: account.email, id: account.id };
-    return { token: await this.signToken(payload) };
+
+    return {
+      token: await this.signToken(payload),
+      account: this.createAccountPayload(account),
+    };
   }
 
   async registerCompany(registerCompanyDto: RegisterCompanyDto) {
@@ -86,8 +91,11 @@ export class AuthService {
     if (!accounts.length) {
       const account = await this.createAccountFromGoogleProfile(profile, role);
 
+      const newAccount = await this.accountService.findOne(account.email);
+
       return {
         token: await this.signToken({ email: account.email, id: account.id }),
+        account: this.createAccountPayload(newAccount),
       };
     }
 
@@ -101,6 +109,7 @@ export class AuthService {
           email: providerAccount.email,
           id: providerAccount.id,
         }),
+        account: this.createAccountPayload(providerAccount),
       };
     }
 
@@ -117,6 +126,8 @@ export class AuthService {
 
     return {
       token: await this.signToken({ email: account.email, id: account.id }),
+      // TODO: handle this better, it works for now because we only have google and local as providers
+      account: this.createAccountPayload(otherProviderAccount),
     };
   }
 
@@ -207,7 +218,6 @@ export class AuthService {
       where: { email, providerType: IsNull() },
     });
 
-    console.log(account);
     if (account.length) {
       throw new BadRequestException('Account already registered');
     }
@@ -243,5 +253,24 @@ export class AuthService {
     }
 
     throw new BadRequestException('Invalid role');
+  }
+
+  private createAccountPayload(account: Account) {
+    if (account.role === 'company') {
+      return {
+        email: account.email,
+        name: account.company.name,
+        profilePicture: account.company.profilePicture,
+        role: account.role,
+      };
+    }
+
+    return {
+      email: account.email,
+      firstName: account.user.firstName,
+      lastName: account.user.lastName,
+      profilePicture: account.user.profilePicture,
+      role: account.role,
+    };
   }
 }

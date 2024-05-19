@@ -21,7 +21,10 @@ export class AccountService {
   }
 
   findOne(email: string) {
-    return this.accountRepository.findOne({ where: { email } });
+    return this.accountRepository.findOne({
+      where: { email },
+      relations: ['user', 'company'],
+    });
   }
 
   update(id: number, updateAccountDto: UpdateAccountDto) {

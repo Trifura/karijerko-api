@@ -18,11 +18,6 @@ import { AuthGuard } from '../auth/guards/Auth.guard';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req: any) {
-    return req.account;
-  }
   @Post()
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.create(createAccountDto);
