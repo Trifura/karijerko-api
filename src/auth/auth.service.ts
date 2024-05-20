@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { RegisterCompanyDto } from './dto/register-company.dto';
 import { AuthProviderDto } from './dto/auth-provider.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private jwtService: JwtService,
     private dataSource: DataSource,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {
     this.googleClient = new OAuth2Client(
       this.configService.get('GOOGLE_OAUTH_CLIENT_ID'),
@@ -76,6 +78,8 @@ export class AuthService {
     );
     const user = await this.createUserAccount(registerUserDto, false);
     console.log(user);
+
+    await this.mailService.sendVerifyEmail(user, 'token');
 
     return { message: 'User registered successfully' };
   }
@@ -132,7 +136,6 @@ export class AuthService {
   }
 
   getProfile(account: Account) {
-    console.log(account);
     return this.createAccountPayload(account);
   }
 

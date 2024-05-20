@@ -11,6 +11,8 @@ import { IndustryModule } from './industry/industry.module';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -27,6 +29,31 @@ import { AuthModule } from './auth/auth.module';
         entities: [join(process.cwd()), 'dist/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: configService.get('MAIL_HOST'),
+          port: configService.get('MAIL_PORT'),
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+            user: configService.get('MAIL_USER'),
+            pass: configService.get('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: `"Karijerko" <${configService.get('MAIL_FROM')}>`,
+        },
+        template: {
+          dir: join(__dirname, '..', 'src', 'mail', 'templates'),
+          adapter: new HandlebarsAdapter(), // or other template engine adapter
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
     }),
     CompanyModule,
     CompanySizeModule,
