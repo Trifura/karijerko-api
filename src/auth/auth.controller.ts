@@ -33,10 +33,14 @@ export class AuthController {
     return this.authService.registerUser(registerUserDto);
   }
 
-  // Google login
   @Post('google')
   handleGoogleLogin(@Body() body: { accessToken: string; role: string }) {
     return this.authService.authenticateGoogle(body.accessToken, body.role);
+  }
+
+  @Post('verify-email')
+  verifyEmail(@Body() body: { token: string }) {
+    return this.authService.verifyEmail(body.token);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

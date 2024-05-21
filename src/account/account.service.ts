@@ -11,24 +11,35 @@ export class AccountService {
     @InjectRepository(Account)
     private accountRepository: Repository<Account>,
   ) {}
-  create(createAccountDto: CreateAccountDto) {
+  async create(createAccountDto: CreateAccountDto) {
     const account = this.accountRepository.create(createAccountDto);
-    return this.accountRepository.save(account);
+    return await this.accountRepository.save(account);
   }
 
-  findAll(query?: any) {
-    return this.accountRepository.find(query);
+  async findAll(query?: any) {
+    return await this.accountRepository.find(query);
   }
 
-  findOne(email: string) {
-    return this.accountRepository.findOne({
+  async findOne(email: string) {
+    return await this.accountRepository.findOne({
       where: { email },
       relations: ['user', 'company'],
     });
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async findOneById(id: number) {
+    return await this.accountRepository.findOne({
+      where: { id },
+      relations: ['user', 'company'],
+    });
+  }
+
+  async update(id: number, updateAccountDto: UpdateAccountDto) {
+    const account = await this.findOneById(id);
+
+    this.accountRepository.merge(account, updateAccountDto);
+
+    return this.accountRepository.save(account);
   }
 
   remove(id: number) {

@@ -154,6 +154,24 @@ export class AuthService {
     return this.createAccountPayload(account);
   }
 
+  async verifyEmail(token: string) {
+    const payload = await this.jwtService.verifyAsync(token);
+    const account = await this.accountService.findOneById(payload.id);
+
+    if (!account) {
+      throw new BadRequestException('Invalid token');
+    }
+
+    if (account.isVerified) {
+      return { message: 'Email already verified', success: false };
+    }
+
+    account.isVerified = true;
+    await this.accountService.update(payload.id, account);
+
+    return { message: 'Email verified successfully', success: true };
+  }
+
   /**
    * Private methods
    */
