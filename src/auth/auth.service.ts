@@ -64,8 +64,18 @@ export class AuthService {
     registerCompanyDto.password = await this.hashPassword(
       registerCompanyDto.password,
     );
-    const company = await this.createCompanyAccount(registerCompanyDto, false);
-    console.log(company);
+    const account = await this.createCompanyAccount(registerCompanyDto, false);
+
+    const verifyToken = await this.signToken({
+      email: account.email,
+      id: account.id,
+    });
+
+    this.mailService.sendVerifyEmail(
+      account.email,
+      account.company.name,
+      verifyToken,
+    );
 
     return { message: 'Company registered successfully' };
   }
@@ -105,12 +115,7 @@ export class AuthService {
 
       const newAccount = await this.accountService.findOne(account.email);
 
-      const name =
-        newAccount.role === 'user'
-          ? newAccount.user.firstName
-          : newAccount.company.name;
-
-      this.mailService.sendWelcomeEmail(name, newAccount.email);
+      this.sendWelcomeEmail(newAccount);
 
       return {
         token: await this.signToken({ email: account.email, id: account.id }),
@@ -168,6 +173,8 @@ export class AuthService {
 
     account.isVerified = true;
     await this.accountService.update(payload.id, account);
+
+    this.sendWelcomeEmail(account);
 
     return { message: 'Email verified successfully', success: true };
   }
@@ -317,5 +324,19 @@ export class AuthService {
       profilePicture: account.user.profilePicture,
       role: account.role,
     };
+  }
+
+  private sendWelcomeEmail(account: Account) {
+    if (account.role === 'company') {
+      this.mailService.sendWelcomeCompanyEmail(
+        account.company.name,
+        account.email,
+      );
+    } else if (account.role === 'user') {
+      this.mailService.sendWelcomeUserEmail(
+        account.user.firstName,
+        account.email,
+      );
+    }
   }
 }
