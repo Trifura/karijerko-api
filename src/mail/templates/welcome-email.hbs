@@ -1,9 +1,10 @@
+<!-- src/mail/templates/welcome-email.hbs -->
 <!DOCTYPE html>
 <html lang="hr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Potvrda E-mail adrese</title>
+  <title>Dobrodošao/la!</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -21,29 +22,18 @@
       text-align: center;
       padding-bottom: 20px;
     }
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      margin-top: 20px;
-      color: #fff;
-      background-color: #58CC02;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .welcome-title {
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>Potvrdite Vaš Email</h1>
+    <h1>Dobrodošao/la u Karijerko!</h1>
   </div>
-  <p class="welcome-title">Bok {{name}}!</p>
-  <p>Hvala ti na registraciji. Molimo klikni na gumb ispod kako bi potvrdio/la svoju e-mail adresu:</p>
-  <a href="{{url}}" class="button">Potvrdi E-mail</a>
+  <p>Bok {{name}},</p>
+  <p>Drago nam je što si se pridružio/la Karijerku! Veselimo se što ćemo ti pomoći na tvom profesionalnom putu.</p>
+  <p>Ako imaš bilo kakvih pitanja ili trebaš pomoć, slobodno nam se javi.</p>
+  <p>Sretno i puno uspjeha,</p>
+  <p>Tvoj Karijerko tim</p>
 </div>
 </body>
 </html>

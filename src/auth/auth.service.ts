@@ -76,10 +76,18 @@ export class AuthService {
     registerUserDto.password = await this.hashPassword(
       registerUserDto.password,
     );
-    const user = await this.createUserAccount(registerUserDto, false);
-    console.log(user);
+    const account = await this.createUserAccount(registerUserDto, false);
 
-    await this.mailService.sendVerifyEmail(user, 'token');
+    const verifyToken = await this.signToken({
+      email: account.email,
+      id: account.id,
+    });
+
+    this.mailService.sendVerifyEmail(
+      account.email,
+      account.user.firstName,
+      verifyToken,
+    );
 
     return { message: 'User registered successfully' };
   }
@@ -96,6 +104,13 @@ export class AuthService {
       const account = await this.createAccountFromGoogleProfile(profile, role);
 
       const newAccount = await this.accountService.findOne(account.email);
+
+      const name =
+        newAccount.role === 'user'
+          ? newAccount.user.firstName
+          : newAccount.company.name;
+
+      this.mailService.sendWelcomeEmail(name, newAccount.email);
 
       return {
         token: await this.signToken({ email: account.email, id: account.id }),
