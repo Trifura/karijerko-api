@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { QueryCompanyDto } from './dto/query-company.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -21,8 +23,8 @@ export class CompanyController {
   }
 
   @Get()
-  findAll() {
-    return this.companyService.findAll();
+  findAll(@Query() query: QueryCompanyDto) {
+    return this.companyService.findAll(query);
   }
 
   @Get(':id')

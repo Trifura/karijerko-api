@@ -6,6 +6,7 @@ import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { IndustryService } from '../industry/industry.service';
 import { CompanySizeService } from '../company_size/company_size.service';
+import { QueryCompanyDto } from './dto/query-company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -34,10 +35,37 @@ export class CompanyService {
     return this.companyRepository.save(company);
   }
 
-  findAll() {
-    return this.companyRepository.find({
-      relations: ['industry', 'companySize'],
-    });
+  async findAll(
+    query: QueryCompanyDto,
+  ): Promise<{ data: Company[]; total: number }> {
+    const { search, industryId, companySizeId, page, limit } = query;
+
+    const qb = this.companyRepository
+      .createQueryBuilder('company')
+      .leftJoinAndSelect('company.industry', 'industry')
+      .leftJoinAndSelect('company.companySize', 'companySize');
+
+    if (search) {
+      qb.andWhere(
+        'company.name ILIKE :search OR company.description ILIKE :search',
+        { search: `%${search}%` },
+      );
+    }
+
+    if (industryId) {
+      qb.andWhere('company.industry.id = :industryId', { industryId });
+    }
+
+    if (companySizeId) {
+      qb.andWhere('company.companySize.id = :companySizeId', { companySizeId });
+    }
+
+    const [data, total] = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return { data, total };
   }
 
   async findOne(id: string) {
