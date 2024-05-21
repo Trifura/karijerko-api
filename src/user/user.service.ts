@@ -4,12 +4,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { OpenAIService } from '../openai/openai.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private openAiService: OpenAIService,
   ) {}
   create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create(createUserDto);
@@ -30,5 +32,9 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async sendMessage(message: any) {
+    return await this.openAiService.chatGptRequest(message);
   }
 }

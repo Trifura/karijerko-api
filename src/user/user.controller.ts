@@ -39,4 +39,9 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
+
+  @Post('send-message')
+  sendMessage(@Body() { message }: any) {
+    return this.userService.sendMessage(message);
+  }
 }

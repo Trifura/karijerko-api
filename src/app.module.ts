@@ -13,6 +13,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { OpenAIModule } from './openai/openai.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -62,6 +63,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
     AccountModule,
     UserModule,
     AuthModule,
+    OpenAIModule,
   ],
   controllers: [AppController],
   providers: [AppService],
