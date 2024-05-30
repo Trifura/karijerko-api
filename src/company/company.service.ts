@@ -38,7 +38,7 @@ export class CompanyService {
   async findAll(
     query: QueryCompanyDto,
   ): Promise<{ data: Company[]; total: number }> {
-    const { search, industryId, companySizeId, page, limit } = query;
+    const { search, industryId, companySizeId, page = 1, limit = 10 } = query;
 
     const qb = this.companyRepository
       .createQueryBuilder('company')
