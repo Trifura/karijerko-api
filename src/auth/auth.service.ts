@@ -16,6 +16,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { RegisterCompanyDto } from './dto/register-company.dto';
 import { AuthProviderDto } from './dto/auth-provider.dto';
 import { MailService } from '../mail/mail.service';
+import slugify from 'slugify';
 
 @Injectable()
 export class AuthService {
@@ -231,8 +232,9 @@ export class AuthService {
     isVerified: boolean,
     authProvider?: AuthProviderDto,
   ) {
+    const slug = slugify(name, { lower: true, remove: /[*+~.()'"!:@]/g });
     return await this.createAccountTransactional(async (queryRunner) => {
-      const company = await queryRunner.manager.save(Company, { name });
+      const company = await queryRunner.manager.save(Company, { name, slug });
       const account = await queryRunner.manager.save(Account, {
         email,
         password,

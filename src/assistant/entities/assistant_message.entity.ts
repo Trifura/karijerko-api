@@ -22,6 +22,7 @@ export class AssistantMessage extends BaseEntity {
   @Column({ type: 'enum', enum: AssistantMessageRole })
   role: AssistantMessageRole;
 
+  // TODO: what to do if company is removed??
   @ManyToOne(() => Company, (company) => company.assistantMessages)
   @JoinColumn({ name: 'company_id' })
   company: Company;
