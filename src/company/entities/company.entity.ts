@@ -23,7 +23,8 @@ export class Company extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false, unique: true })
+  // TODO: set to nullable false and unique true
+  @Column({ nullable: true })
   slug: string;
 
   @Column({ name: 'profile_picture', nullable: true })
