@@ -41,4 +41,9 @@ export class CompanyController {
   remove(@Param('id') id: string) {
     return this.companyService.remove(id);
   }
+
+  @Get('slug/:companySlug')
+  findBySlug(@Param('companySlug') companySlug: string) {
+    return this.companyService.findBySlug(companySlug);
+  }
 }

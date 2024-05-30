@@ -103,4 +103,15 @@ export class CompanyService {
 
     return { message: 'Company deleted successfully', success: true };
   }
+
+  async findBySlug(slug: string) {
+    const company = await this.companyRepository.findOne({
+      where: { slug },
+      relations: ['industry', 'companySize'],
+    });
+    if (!company) {
+      throw new NotFoundException(`Company with slug ${slug} not found`);
+    }
+    return company;
+  }
 }
