@@ -267,7 +267,7 @@ export class AuthService {
 
   private async checkAccountExists(email: string) {
     const account = await this.accountService.findAll({
-      where: { email, providerType: IsNull() },
+      where: { email },
     });
 
     if (account.length) {

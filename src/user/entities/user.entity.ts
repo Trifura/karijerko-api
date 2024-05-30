@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Account } from '../../account/entities/account.entity';
 import { BaseEntity } from '../../common/BaseEntity';
 import { Exclude } from 'class-transformer';
+import { AssistantMessage } from '../../assistant/entities/assistant_message.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,4 +21,10 @@ export class User extends BaseEntity {
 
   @Column({ name: 'profile_picture', nullable: true })
   profilePicture: string;
+
+  @OneToMany(
+    () => AssistantMessage,
+    (assistantMessage) => assistantMessage.user,
+  )
+  assistantMessages: AssistantMessage[];
 }

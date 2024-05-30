@@ -1,13 +1,9 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
-import OpenAIApi from 'openai';
+import OpenAIApi, { OpenAI } from 'openai';
 import { ChatCompletion } from 'openai/resources';
 import { ConfigService } from '@nestjs/config';
-
-// Define a type for message objects
-type Message = {
-  text: string;
-  ai?: boolean; // Indicate if the message is from the AI
-};
+import ChatCompletionMessageParam = OpenAI.ChatCompletionMessageParam;
+import { AssistantMessage } from '../assistant/entities/assistant_message.entity';
 
 @Injectable()
 export class OpenAIService {
@@ -21,28 +17,27 @@ export class OpenAIService {
     });
   }
 
-  /**
-   * Make a request to ChatGPT to generate a response based on a prompt and message history.
-   * @param prompt - The prompt for the ChatGPT model
-   * @param messages - An array of messages representing the conversation history
-   * @returns A string containing the generated response
-   */
-  async chatGptRequest(prompt: string, messages?: Message[]): Promise<string> {
+  async chatGptRequest(
+    prompt: string,
+    systemPrompt: string,
+    messages?: AssistantMessage[],
+  ): Promise<string> {
     try {
       // Convert message history to the format expected by the OpenAI API
-      // const history = messages.map(
-      //   (message): ChatCompletionMessageParam => ({
-      //     role: message.ai ? 'assistant' : 'user',
-      //     content: message.text,
-      //   }),
-      // );
+      const history = messages.map(
+        (message): ChatCompletionMessageParam => ({
+          role: message.role,
+          content: message.content,
+        }),
+      );
 
       // Make a request to the ChatGPT model
       const completion: ChatCompletion =
         await this.openAi.chat.completions.create({
           model: 'gpt-3.5-turbo-0125',
           messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
+            { role: 'system', content: systemPrompt },
+            ...history,
             { role: 'user', content: prompt },
           ],
           // temperature: 0.5,
@@ -53,8 +48,6 @@ export class OpenAIService {
       const [content] = completion.choices.map(
         (choice) => choice.message.content,
       );
-
-      console.log(completion.choices);
 
       return content;
     } catch (e) {

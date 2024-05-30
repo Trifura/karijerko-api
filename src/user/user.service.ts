@@ -33,8 +33,4 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
-
-  async sendMessage(message: any) {
-    return await this.openAiService.chatGptRequest(message);
-  }
 }

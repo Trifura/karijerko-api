@@ -10,6 +10,7 @@ import { CompanySize } from '../../company_size/entities/company_size.entity';
 import { OfficeLocation } from '../../office_location/entities/office_location.entity';
 import { BaseEntity } from '../../common/BaseEntity';
 import { Account } from '../../account/entities/account.entity';
+import { AssistantMessage } from '../../assistant/entities/assistant_message.entity';
 
 @Entity('company')
 export class Company extends BaseEntity {
@@ -54,4 +55,10 @@ export class Company extends BaseEntity {
 
   @OneToMany(() => OfficeLocation, (officeLocation) => officeLocation.company)
   officeLocations: OfficeLocation[];
+
+  @OneToMany(
+    () => AssistantMessage,
+    (assistantMessage) => assistantMessage.company,
+  )
+  assistantMessages: AssistantMessage[];
 }
