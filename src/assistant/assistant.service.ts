@@ -96,8 +96,20 @@ export class AssistantService {
       .innerJoin('assistantMessage.user', 'user')
       .where('user.id = :userId', { userId })
       .distinct(true)
-      .select(['company.id', 'company.name']); // Add other fields you need
+      .select([
+        'company.id',
+        'company.name',
+        'company.slug',
+        'company.profile_picture',
+      ]);
 
-    return await qb.getRawMany();
+    const rawCompanies = await qb.getRawMany();
+
+    return rawCompanies.map((company) => ({
+      id: company.company_id,
+      name: company.company_name,
+      slug: company.company_slug,
+      profilePicture: company.profile_picture,
+    }));
   }
 }
