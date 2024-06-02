@@ -85,7 +85,6 @@ export class AssistantService {
       qb.andWhere('company.id = :companyId', { companyId });
     }
 
-    console.log(qb.getSql());
     return await qb.getMany();
   }
 
