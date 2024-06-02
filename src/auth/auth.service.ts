@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource, IsNull, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Account } from '../account/entities/account.entity';
 import { Company } from '../company/entities/company.entity';
@@ -205,7 +205,7 @@ export class AuthService {
   }
 
   private async createUserAccount(
-    { firstName, lastName, password, email }: RegisterUserDto,
+    { firstName, lastName, password, email, profilePicture }: RegisterUserDto,
     isVerified: boolean,
     authProvider?: AuthProviderDto,
   ) {
@@ -213,6 +213,7 @@ export class AuthService {
       const user = await queryRunner.manager.save(User, {
         firstName,
         lastName,
+        profilePicture,
       });
       const account = await queryRunner.manager.save(Account, {
         email,
@@ -291,6 +292,7 @@ export class AuthService {
           firstName: profile.given_name,
           lastName: profile.family_name,
           email: profile.email,
+          profilePicture: profile.picture,
         },
         true,
         { providerType: 'google', providerId: profile.sub },
