@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { BaseEntity } from '../../common/BaseEntity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Education extends BaseEntity {
@@ -22,6 +23,7 @@ export class Education extends BaseEntity {
   @Column({ name: 'end_year' })
   endYear: number;
 
+  @Exclude()
   @ManyToOne(() => User, (user) => user.educations)
   user: User;
 }

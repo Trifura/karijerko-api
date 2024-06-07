@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateEducationDto } from './dto/create-education.dto';
 import { UpdateEducationDto } from './dto/update-education.dto';
+import { Account } from '../account/entities/account.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Education } from './entities/education.entity';
 
 @Injectable()
 export class EducationService {
-  create(createEducationDto: CreateEducationDto) {
-    return 'This action adds a new education';
+  constructor(
+    @InjectRepository(Education)
+    private educationRepository: Repository<Education>,
+  ) {}
+
+  async create(account: Account, createEducationDto: CreateEducationDto) {
+    const education = this.educationRepository.create(createEducationDto);
+
+    education.user = account.user;
+
+    return await this.educationRepository.save(education);
+  }
+  async findAll(account: Account) {
+    console.log(account);
+    return await this.educationRepository.find({
+      where: { user: { id: account.user.id } },
+    });
   }
 
-  findAll() {
-    return `This action returns all education`;
+  async findOne(account: Account, id: number) {
+    const education = await this.educationRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+
+    if (!education) {
+      throw new NotFoundException(`Education with id ${id} not found`);
+    }
+
+    if (education.user.id !== account.user.id) {
+      throw new UnauthorizedException(
+        `You are not authorized to access this education`,
+      );
+    }
+
+    return education;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} education`;
+  async update(
+    account: Account,
+    id: number,
+    updateEducationDto: UpdateEducationDto,
+  ) {
+    const education = await this.findOne(account, id);
+
+    this.educationRepository.merge(education, updateEducationDto);
+
+    return await this.educationRepository.save(education);
   }
 
-  update(id: number, updateEducationDto: UpdateEducationDto) {
-    return `This action updates a #${id} education`;
-  }
+  async remove(account: Account, id: number) {
+    const education = await this.findOne(account, id);
 
-  remove(id: number) {
-    return `This action removes a #${id} education`;
+    return await this.educationRepository.remove(education);
   }
 }

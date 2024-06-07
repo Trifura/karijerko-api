@@ -6,13 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
-  Request,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { AuthGuard } from '../auth/guards/Auth.guard';
 
 @Controller('account')
 export class AccountController {
