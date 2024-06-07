@@ -15,6 +15,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { OpenAIModule } from './openai/openai.module';
 import { AssistantModule } from './assistant/assistant.module';
+import { LanguageModule } from './language/language.module';
+import { EducationModule } from './education/education.module';
+import { ProfileModule } from './profile/profile.module';
+import { ProjectModule } from './project/project.module';
+import { SkillModule } from './skill/skill.module';
+import { ProjectContentModule } from './project-content/project-content.module';
+import { UserLanguageModule } from './user-language/user-language.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -66,6 +73,13 @@ import { AssistantModule } from './assistant/assistant.module';
     AuthModule,
     OpenAIModule,
     AssistantModule,
+    LanguageModule,
+    EducationModule,
+    ProfileModule,
+    ProjectModule,
+    SkillModule,
+    ProjectContentModule,
+    UserLanguageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
