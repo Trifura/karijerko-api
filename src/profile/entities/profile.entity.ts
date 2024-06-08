@@ -31,7 +31,9 @@ export class Profile extends BaseEntity {
   @ManyToOne(() => User, (user) => user.profiles)
   user: User;
 
-  @OneToMany(() => Project, (project) => project.profile)
+  @OneToMany(() => Project, (project) => project.profile, {
+    onDelete: 'CASCADE',
+  })
   projects: Project[];
 
   // TODO: add computed field skills that has list of unique skills from all projects.
