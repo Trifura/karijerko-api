@@ -8,6 +8,7 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 import { BaseEntity } from '../../common/BaseEntity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Profile extends BaseEntity {
@@ -26,6 +27,7 @@ export class Profile extends BaseEntity {
   @Column({ name: 'is_primary' })
   isPrimary: boolean;
 
+  @Exclude()
   @ManyToOne(() => User, (user) => user.profiles)
   user: User;
 

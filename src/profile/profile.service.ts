@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profile } from './entities/profile.entity';
 import { Account } from '../account/entities/account.entity';
+import slugify from 'slugify';
 
 @Injectable()
 export class ProfileService {
@@ -18,6 +19,17 @@ export class ProfileService {
   ) {}
 
   async create(account: Account, createProfileDto: CreateProfileDto) {
+    if (!createProfileDto.name) {
+      throw new Error('Name is required');
+    }
+
+    createProfileDto.slug = slugify(createProfileDto.name, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
+
+    createProfileDto.isPrimary = false;
+
     const profile = this.profileRepository.create(createProfileDto);
 
     profile.user = account.user;
@@ -29,13 +41,14 @@ export class ProfileService {
   async findAll(account: Account) {
     return await this.profileRepository.find({
       where: { user: { id: account.user.id } },
+      relations: ['projects'],
     });
   }
 
   async findOne(account: Account, id: number) {
     const profile = await this.profileRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['projects', 'user'],
     });
 
     if (!profile) {
@@ -51,11 +64,26 @@ export class ProfileService {
     return profile;
   }
 
-  update(account: Account, id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async update(
+    account: Account,
+    id: number,
+    updateProfileDto: UpdateProfileDto,
+  ) {
+    const profile = await this.findOne(account, id);
+
+    updateProfileDto.slug = slugify(updateProfileDto.name, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
+
+    this.profileRepository.merge(profile, updateProfileDto);
+
+    return await this.profileRepository.save(profile);
   }
 
-  remove(account: Account, id: number) {
-    return `This action removes a #${id} profile`;
+  async remove(account: Account, id: number) {
+    const profile = await this.findOne(account, id);
+
+    return await this.profileRepository.remove(profile);
   }
 }
