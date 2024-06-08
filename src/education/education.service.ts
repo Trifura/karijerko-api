@@ -25,7 +25,6 @@ export class EducationService {
     return await this.educationRepository.save(education);
   }
   async findAll(account: Account) {
-    console.log(account);
     return await this.educationRepository.find({
       where: { user: { id: account.user.id } },
     });
