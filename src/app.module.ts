@@ -22,6 +22,8 @@ import { ProjectModule } from './project/project.module';
 import { SkillModule } from './skill/skill.module';
 import { ProjectContentModule } from './project-content/project-content.module';
 import { UserLanguageModule } from './user-language/user-language.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { UploadModule } from './upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -80,6 +82,11 @@ import { UserLanguageModule } from './user-language/user-language.module';
     SkillModule,
     ProjectContentModule,
     UserLanguageModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
