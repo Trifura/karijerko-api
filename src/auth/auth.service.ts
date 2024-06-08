@@ -72,7 +72,7 @@ export class AuthService {
       id: account.id,
     });
 
-    this.mailService.sendVerifyEmail(
+    await this.mailService.sendVerifyEmail(
       account.email,
       account.company.name,
       verifyToken,
@@ -94,7 +94,7 @@ export class AuthService {
       id: account.id,
     });
 
-    this.mailService.sendVerifyEmail(
+    await this.mailService.sendVerifyEmail(
       account.email,
       account.user.firstName,
       verifyToken,
@@ -116,7 +116,7 @@ export class AuthService {
 
       const newAccount = await this.accountService.findOne(account.email);
 
-      this.sendWelcomeEmail(newAccount);
+      await this.sendWelcomeEmail(newAccount);
 
       return {
         token: await this.signToken({ email: account.email, id: account.id }),
@@ -175,7 +175,7 @@ export class AuthService {
     account.isVerified = true;
     await this.accountService.update(payload.id, account);
 
-    this.sendWelcomeEmail(account);
+    await this.sendWelcomeEmail(account);
 
     return { message: 'Email verified successfully', success: true };
   }
@@ -330,14 +330,14 @@ export class AuthService {
     };
   }
 
-  private sendWelcomeEmail(account: Account) {
+  private async sendWelcomeEmail(account: Account) {
     if (account.role === 'company') {
-      this.mailService.sendWelcomeCompanyEmail(
+      await this.mailService.sendWelcomeCompanyEmail(
         account.company.name,
         account.email,
       );
     } else if (account.role === 'user') {
-      this.mailService.sendWelcomeUserEmail(
+      await this.mailService.sendWelcomeUserEmail(
         account.user.firstName,
         account.email,
       );
