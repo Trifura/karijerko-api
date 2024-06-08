@@ -1,15 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
+import { QuerySkillDto } from './dto/query-skill.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Skill } from './entities/skill.entity';
 
 @Injectable()
 export class SkillService {
+  constructor(
+    @InjectRepository(Skill)
+    private skillRepository: Repository<Skill>,
+  ) {}
+
   create(createSkillDto: CreateSkillDto) {
     return 'This action adds a new skill';
   }
 
-  findAll() {
-    return `This action returns all skill`;
+  async findAll(query: QuerySkillDto) {
+    const limit = 20;
+
+    return await this.skillRepository
+      .createQueryBuilder('skill')
+      .where('skill.name ILIKE :name', { name: `%${query.search}%` })
+      .limit(limit)
+      .getMany();
   }
 
   findOne(id: number) {
