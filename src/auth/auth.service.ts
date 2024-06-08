@@ -327,6 +327,7 @@ export class AuthService {
       lastName: account.user.lastName,
       profilePicture: account.user.profilePicture,
       role: account.role,
+      location: account.user.city,
       profiles: account.user.profiles || [],
     };
   }
