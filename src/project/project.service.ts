@@ -51,11 +51,11 @@ export class ProjectService {
   async findOne(id: number) {
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: ['skills', 'contents'],
+      relations: ['skills', 'contents', 'profile'],
     });
 
     if (!project) {
-      throw new NotFoundException(`Company with ID ${id} not found`);
+      throw new NotFoundException(`Project with ID ${id} not found`);
     }
 
     return project;
@@ -94,7 +94,22 @@ export class ProjectService {
     return await this.projectRepository.save(project);
   }
 
-  remove(account: Account, id: number) {
-    return `This action removes a #${id} project`;
+  async remove(account: Account, id: number) {
+    const project = await this.findOne(id);
+
+    const profile = await this.profileService.findOne(
+      account,
+      project.profile.id,
+    );
+
+    if (!profile) {
+      throw new Error('Profile not found');
+    }
+
+    if (profile.user.id !== account.user.id) {
+      throw new Error('You are not authorized to access this project');
+    }
+
+    return await this.projectRepository.remove(project);
   }
 }
