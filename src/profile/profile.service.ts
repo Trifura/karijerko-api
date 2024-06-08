@@ -28,7 +28,11 @@ export class ProfileService {
       remove: /[*+~.()'"!:@]/g,
     });
 
-    createProfileDto.isPrimary = false;
+    // If it's the first profile, set it as primary
+    createProfileDto.isPrimary =
+      (await this.profileRepository.count({
+        where: { user: { id: account.user.id } },
+      })) === 0;
 
     const profile = this.profileRepository.create(createProfileDto);
 
