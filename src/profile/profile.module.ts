@@ -10,5 +10,6 @@ import { AccountModule } from '../account/account.module';
   imports: [TypeOrmModule.forFeature([Profile]), JwtModule, AccountModule],
   controllers: [ProfileController],
   providers: [ProfileService],
+  exports: [ProfileService],
 })
 export class ProfileModule {}

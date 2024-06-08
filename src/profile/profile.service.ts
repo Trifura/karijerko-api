@@ -41,14 +41,14 @@ export class ProfileService {
   async findAll(account: Account) {
     return await this.profileRepository.find({
       where: { user: { id: account.user.id } },
-      relations: ['projects'],
+      relations: ['projects', 'projects.contents', 'projects.skills'],
     });
   }
 
   async findOne(account: Account, id: number) {
     const profile = await this.profileRepository.findOne({
       where: { id },
-      relations: ['projects', 'user'],
+      relations: ['projects', 'projects.contents', 'projects.skills', 'user'],
     });
 
     if (!profile) {

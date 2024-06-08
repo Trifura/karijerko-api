@@ -10,15 +10,20 @@ export class ProjectContent extends BaseEntity {
   @Column()
   type: string;
 
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
   @Column()
+  url: string;
+
+  @Column({ nullable: true })
   description: string;
 
-  @Column({ name: 'order_number' })
+  @Column({ name: 'order_number', nullable: true })
   orderNumber: number;
 
-  @ManyToOne(() => Project, (project) => project.contents)
+  @ManyToOne(() => Project, (project) => project.contents, {
+    orphanedRowAction: 'delete',
+  })
   project: Project;
 }
