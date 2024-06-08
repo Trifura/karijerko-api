@@ -24,6 +24,9 @@ import { ProjectContentModule } from './project-content/project-content.module';
 import { UserLanguageModule } from './user-language/user-language.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UploadModule } from './upload/upload.module';
+import { MetadataService } from './metadata/metadata.service';
+import { MetadataController } from './metadata/metadata.controller';
+import { MetadataModule } from './metadata/metadata.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -87,8 +90,9 @@ import { UploadModule } from './upload/upload.module';
       serveRoot: '/uploads',
     }),
     UploadModule,
+    MetadataModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, MetadataController],
+  providers: [AppService, MetadataService],
 })
 export class AppModule {}
