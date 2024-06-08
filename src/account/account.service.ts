@@ -23,14 +23,14 @@ export class AccountService {
   async findOne(email: string) {
     return await this.accountRepository.findOne({
       where: { email },
-      relations: ['user', 'company'],
+      relations: ['user', 'user.profiles', 'company'],
     });
   }
 
   async findOneById(id: number) {
     return await this.accountRepository.findOne({
       where: { id },
-      relations: ['user', 'company'],
+      relations: ['user', 'user.profiles', 'company'],
     });
   }
 
