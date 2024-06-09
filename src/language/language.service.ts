@@ -1,26 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLanguageDto } from './dto/create-language.dto';
-import { UpdateLanguageDto } from './dto/update-language.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { QuerySkillDto } from '../skill/dto/query-skill.dto';
+import { Language } from './entities/language.entity';
 
 @Injectable()
 export class LanguageService {
-  create(createLanguageDto: CreateLanguageDto) {
-    return 'This action adds a new language';
-  }
+  constructor(
+    @InjectRepository(Language)
+    private languageRepository: Repository<Language>,
+  ) {}
 
-  findAll() {
-    return `This action returns all language`;
-  }
+  async findAll(query: QuerySkillDto) {
+    const limit = 20;
 
-  findOne(id: number) {
-    return `This action returns a #${id} language`;
-  }
-
-  update(id: number, updateLanguageDto: UpdateLanguageDto) {
-    return `This action updates a #${id} language`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} language`;
+    return await this.languageRepository
+      .createQueryBuilder('language')
+      .where('language.name ILIKE :name', { name: `%${query.search}%` })
+      .limit(limit)
+      .getMany();
   }
 }
