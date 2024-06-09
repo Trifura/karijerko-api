@@ -72,4 +72,6 @@ export class Company extends BaseEntity {
   @ManyToMany(() => Skill, (skill) => skill.companies)
   @JoinTable()
   skills: Skill[];
+
+  skillCount: number;
 }

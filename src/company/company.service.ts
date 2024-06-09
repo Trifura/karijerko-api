@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { IndustryService } from '../industry/industry.service';
 import { CompanySizeService } from '../company_size/company_size.service';
 import { QueryCompanyDto } from './dto/query-company.dto';
+import { Skill } from '../skill/entities/skill.entity';
 
 @Injectable()
 export class CompanyService {
@@ -43,7 +44,8 @@ export class CompanyService {
     const qb = this.companyRepository
       .createQueryBuilder('company')
       .leftJoinAndSelect('company.industry', 'industry')
-      .leftJoinAndSelect('company.companySize', 'companySize');
+      .leftJoinAndSelect('company.companySize', 'companySize')
+      .leftJoinAndSelect('company.skills', 'skills');
 
     if (search) {
       qb.andWhere(
@@ -115,5 +117,34 @@ export class CompanyService {
       throw new NotFoundException(`Company with slug ${slug} not found`);
     }
     return company;
+  }
+
+  async findAndSortBySkills(skills: Skill[]) {
+    const skillIds = skills.map((skill) => skill.id);
+
+    const query = this.companyRepository
+      .createQueryBuilder('company')
+      .leftJoinAndSelect(
+        'company.skills',
+        'skill',
+        'skill.id IN (:...skillIds)',
+        {
+          skillIds,
+        },
+      )
+      .leftJoinAndSelect('company.industry', 'industry')
+      .leftJoinAndSelect('company.companySize', 'companySize')
+      .groupBy('company.id')
+      .addGroupBy('industry.id')
+      .addGroupBy('companySize.id')
+      .select([
+        'company',
+        'industry',
+        'companySize',
+        'COUNT(DISTINCT skill.id) AS skillCount',
+      ])
+      .orderBy('skillCount', 'DESC');
+
+    return await query.getMany();
   }
 }
