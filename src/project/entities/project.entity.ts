@@ -25,7 +25,9 @@ export class Project extends BaseEntity {
   description: string;
 
   @Exclude()
-  @ManyToOne(() => Profile, (profile) => profile.projects)
+  @ManyToOne(() => Profile, (profile) => profile.projects, {
+    onDelete: 'CASCADE',
+  })
   profile: Profile;
 
   @ManyToMany(() => Skill, (skill) => skill.projects)
