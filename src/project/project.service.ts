@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Account } from '../account/entities/account.entity';
@@ -18,6 +22,10 @@ export class ProjectService {
   ) {}
 
   async create(account: Account, createProjectDto: CreateProjectDto) {
+    if (!createProjectDto.profileId) {
+      return new BadRequestException('Profile ID is required');
+    }
+
     const profile = await this.profileService.findOne(
       account,
       createProjectDto.profileId,
@@ -66,9 +74,11 @@ export class ProjectService {
     id: number,
     updateProjectDto: UpdateProjectDto,
   ) {
+    const project = await this.findOne(id);
+
     const profile = await this.profileService.findOne(
       account,
-      updateProjectDto.profileId,
+      project.profile.id,
     );
 
     if (!profile) {
@@ -78,8 +88,6 @@ export class ProjectService {
     if (profile.user.id !== account.user.id) {
       throw new Error('You are not authorized to access this profile');
     }
-
-    const project = await this.findOne(id);
 
     project.contents = await Promise.all(
       updateProjectDto.contents.map((content) =>
