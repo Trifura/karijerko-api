@@ -88,6 +88,18 @@ export class ProfileService {
   async remove(account: Account, id: number) {
     const profile = await this.findOne(account, id);
 
+    if (profile.isPrimary) {
+      const profiles = await this.findAll(account);
+
+      if (profiles.length > 1) {
+        const newPrimaryProfile = profiles.find((p) => p.id !== profile.id);
+
+        newPrimaryProfile.isPrimary = true;
+
+        await this.profileRepository.save(newPrimaryProfile);
+      }
+    }
+
     return await this.profileRepository.remove(profile);
   }
 }
