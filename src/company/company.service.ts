@@ -36,10 +36,14 @@ export class CompanyService {
     return this.companyRepository.save(company);
   }
 
-  async findAll(
-    query: QueryCompanyDto,
-  ): Promise<{ data: Company[]; total: number }> {
-    const { search, industryId, companySizeId, page = 1, limit = 10 } = query;
+  async findAll(query?: QueryCompanyDto) {
+    const {
+      search,
+      industryId,
+      companySizeId,
+      // page = 1,
+      // limit = 10,
+    } = query || {};
 
     const qb = this.companyRepository
       .createQueryBuilder('company')
@@ -62,12 +66,7 @@ export class CompanyService {
       qb.andWhere('company.companySize.id = :companySizeId', { companySizeId });
     }
 
-    const [data, total] = await qb
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-
-    return { data, total };
+    return await qb.getMany();
   }
 
   async findOne(id: string) {

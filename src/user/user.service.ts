@@ -34,7 +34,10 @@ export class UserService {
 
     const uniqueSkills = this.getUniqueSkills(profile.projects);
 
-    return this.companyService.findAndSortBySkills(uniqueSkills);
+    if (uniqueSkills.length)
+      return this.companyService.findAndSortBySkills(uniqueSkills);
+
+    return this.companyService.findAll();
   }
 
   getUniqueSkills(projects: Project[]) {
