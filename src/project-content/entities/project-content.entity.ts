@@ -24,6 +24,7 @@ export class ProjectContent extends BaseEntity {
 
   @ManyToOne(() => Project, (project) => project.contents, {
     orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
   })
   project: Project;
 }

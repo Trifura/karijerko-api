@@ -32,8 +32,6 @@ export class Project extends BaseEntity {
   @JoinTable()
   skills: Skill[];
 
-  @OneToMany(() => ProjectContent, (projectContent) => projectContent.project, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => ProjectContent, (projectContent) => projectContent.project)
   contents: ProjectContent[];
 }
