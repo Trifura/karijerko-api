@@ -71,7 +71,7 @@ export class CompanyService {
   async findOne(id: string) {
     const company = await this.companyRepository.findOne({
       where: { id },
-      relations: ['industry', 'companySize'],
+      relations: ['industry', 'companySize', 'skills'],
     });
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);
@@ -89,6 +89,8 @@ export class CompanyService {
     company.companySize = await this.companySizeService.findOne(
       updateCompanyDto.companySizeId,
     );
+
+    company.skills = updateCompanyDto.skills;
 
     this.companyRepository.merge(company, updateCompanyDto);
 

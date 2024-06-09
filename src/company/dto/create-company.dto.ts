@@ -8,6 +8,7 @@ import {
   IsDate,
   IsNumber,
 } from 'class-validator';
+import { Skill } from '../../skill/entities/skill.entity';
 
 export class CreateCompanyDto {
   @IsString()
@@ -58,4 +59,7 @@ export class CreateCompanyDto {
   @IsString()
   @IsOptional()
   locations?: string;
+
+  @IsOptional()
+  skills: Skill[];
 }

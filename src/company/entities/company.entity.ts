@@ -4,6 +4,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Industry } from '../../industry/entities/industry.entity';
 import { CompanySize } from '../../company_size/entities/company_size.entity';
@@ -11,6 +13,7 @@ import { OfficeLocation } from '../../office_location/entities/office_location.e
 import { BaseEntity } from '../../common/BaseEntity';
 import { Account } from '../../account/entities/account.entity';
 import { AssistantMessage } from '../../assistant/entities/assistant_message.entity';
+import { Skill } from '../../skill/entities/skill.entity';
 
 @Entity('company')
 export class Company extends BaseEntity {
@@ -65,4 +68,8 @@ export class Company extends BaseEntity {
     (assistantMessage) => assistantMessage.company,
   )
   assistantMessages: AssistantMessage[];
+
+  @ManyToMany(() => Skill, (skill) => skill.companies)
+  @JoinTable()
+  skills: Skill[];
 }
