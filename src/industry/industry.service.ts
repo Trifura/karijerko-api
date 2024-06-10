@@ -16,7 +16,7 @@ export class IndustryService {
   }
 
   findAll() {
-    return `This action returns all industry`;
+    return this.industryRepository.find();
   }
 
   async findOne(id: number) {

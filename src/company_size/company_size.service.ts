@@ -16,7 +16,7 @@ export class CompanySizeService {
   }
 
   findAll() {
-    return `This action returns all companySize`;
+    return this.companySizeRepository.find();
   }
 
   async findOne(id: string) {

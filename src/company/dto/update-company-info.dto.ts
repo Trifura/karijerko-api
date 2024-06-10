@@ -40,7 +40,7 @@ export class UpdateCompanyInfoDto {
 
   @IsOptional()
   @IsNumber()
-  industryId?: Industry;
+  industry?: Industry;
 
   @IsOptional()
   @IsString()

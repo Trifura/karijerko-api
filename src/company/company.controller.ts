@@ -55,7 +55,7 @@ export class CompanyController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch('me/info')
+  @Get('me/info')
   getInfo(@Request() req: any) {
     return this.companyService.getInfo(req.account);
   }
