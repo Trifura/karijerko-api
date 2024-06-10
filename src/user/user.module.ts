@@ -8,11 +8,12 @@ import { ProfileModule } from '../profile/profile.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AccountModule } from '../account/account.module';
 import { CompanyModule } from '../company/company.module';
+import { Company } from '../company/entities/company.entity';
 
 @Module({
   imports: [
     OpenAIModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Company]),
     ProfileModule,
     JwtModule,
     AccountModule,

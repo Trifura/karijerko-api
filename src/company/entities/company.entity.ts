@@ -14,6 +14,7 @@ import { BaseEntity } from '../../common/BaseEntity';
 import { Account } from '../../account/entities/account.entity';
 import { AssistantMessage } from '../../assistant/entities/assistant_message.entity';
 import { Skill } from '../../skill/entities/skill.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity('company')
 export class Company extends BaseEntity {
@@ -73,5 +74,6 @@ export class Company extends BaseEntity {
   @JoinTable()
   skills: Skill[];
 
-  skillCount: number;
+  @ManyToMany(() => User, (user) => user.subscribedCompanies)
+  subscribers: User[];
 }

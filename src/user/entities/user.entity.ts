@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Account } from '../../account/entities/account.entity';
 import { BaseEntity } from '../../common/BaseEntity';
 import { Exclude } from 'class-transformer';
@@ -6,6 +13,7 @@ import { AssistantMessage } from '../../assistant/entities/assistant_message.ent
 import { UserLanguage } from '../../user-language/entities/user-language.entity';
 import { Education } from '../../education/entities/education.entity';
 import { Profile } from '../../profile/entities/profile.entity';
+import { Company } from '../../company/entities/company.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -42,4 +50,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Profile, (profile) => profile.user)
   profiles: Profile[];
+
+  @ManyToMany(() => Company, (company) => company.subscribers)
+  @JoinTable()
+  subscribedCompanies: Company[];
 }
