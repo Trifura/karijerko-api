@@ -32,4 +32,10 @@ export class UserController {
   unsubscribe(@Request() req: any, @Param('companyId') companyId: string) {
     return this.userService.unsubscribeCompany(req.account, companyId);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('subscription')
+  fetchSubscriptions(@Request() req: any) {
+    return this.userService.getSubscribedCompanies(req.account.user.id);
+  }
 }

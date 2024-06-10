@@ -86,6 +86,19 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async getSubscribedCompanies(userId: number): Promise<Company[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'subscribedCompanies',
+        'subscribedCompanies.industry',
+        'subscribedCompanies.companySize',
+      ],
+    });
+
+    return user.subscribedCompanies;
+  }
+
   getUniqueSkills(projects: Project[]) {
     const skillsMap = new Map();
 
