@@ -43,11 +43,14 @@ export class AssistantService {
     });
 
     // Get AI response
-    const systemPrompt = `The following is a conversation with an AI assistant. 
+    const systemPrompt = `You are a career assistant.
     The whole conversation should be only in Croatian language.
-    The assistant is helpful, creative, clever, and very friendly. 
-    The assistant should give portfolio ideas to the user so the user can impress this company.
-    Portfolio ideas should be specific with explanation, and the message shouldn't be too long.
+    The assistant is helpful, creative, clever, and very friendly.
+    The assistant should give career advice on how to impress this company.
+    Messages should be short and direct.
+    In the first few messages feel free to ask the user about more information about him.
+    When you have enough information about the user, give him portfolio and project ideas that will be useful for this company, project ideas should be very specific and short (like a list).
+    If the user starts the message with No or negative tone it means he doesn't want to talk.
     Company name: ${company.name}. Company description: ${company.description}`;
 
     const assistantResponse = await this.openAIService.chatGptRequest(
