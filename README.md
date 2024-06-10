@@ -13,7 +13,6 @@ Karijerko API pruža RESTful usluge za upravljanje oglasima tvrtki, korisničkim
    ```bash
    git clone https://github.com/Trifura/karijerko-api
    cd karijerko-api
- 
 
 2. **Instalirajte ovisnosti:**
    ```bash
@@ -27,10 +26,11 @@ Karijerko API pruža RESTful usluge za upravljanje oglasima tvrtki, korisničkim
    Ova naredba pokreće NestJS aplikaciju koja sluša zahtjeve na [http://localhost:3000](http://localhost:3000).
 
 ## <span style="color:#58CC02">API Značajke</span>
-### Ključne krajnje točke
-- **Upravljanje tvrtkama:** CRUD operacije za oglase tvrtki, funkcionalnosti pretraživanja i filtriranja.
-- **Korisnički profili:** Upravljanje korisničkim podacima, autentifikacija i autorizacija.
-- **Obrada prijava:** Upravljanje prijavama, recenzijama i odgovorima korisnika.
+### Ključne značajke
+- **Kartice tvrtki:** Korisnici mogu pregledavati popis kartica tvrtki, od kojih svaka pruža detaljne informacije o tvrtki, dostupnim pozicijama i procesu prijave.
+- **Responzivni dizajn:** Aplikacija je potpuno responzivna, pružajući dosljedno iskustvo na različitim uređajima i veličinama ekrana.
+- **AI asisten koji će ti pomoći odabrati savršene projekte za određene firme
+- **Personalizirani search ovisno o profilu korisnika
 
 ### Korištenje API-ja
 - **Autentifikacija:** Koristite JWT za siguran pristup API krajnjim točkama.
@@ -51,4 +51,4 @@ Koristite GitHub issues za prijavljivanje potencijalnih bugova ili zahtjeva za z
 Za daljnju pomoć ili kontaktiranje održavatelja, molimo pošaljite email na [hello@karijerko.com](mailto:hello@karijerko.com).
 
 Također, možete nas posjetiti na našoj web stranici [karijerko.com](https://karijerko.com).
-```
+
