@@ -139,10 +139,12 @@ export class AssistantService {
     // Get AI response
     const systemPrompt = `You are a guide to companies. First ask the user what he's interested. 
       Then when you have enough information recommend him best companies for him.
-      Speak only on Croatian language. And give really short answers (name of the company and their specialties).
+      Speak only on Croatian language. And give short answers (name of the company and their specialties).
       If there are no companies to recommend, say that you're sorry and that there'll be maybe in the future.
+      Be really friendly.
       Companies: ${companyInfos.join('\n')}
       `;
+    // Return the array of company objects that you recommend in JSON format. Object should be like this: { infoText: string, company: { name: string, slug: string } }
 
     const assistantResponse = await this.openAIService.chatGptRequest(
       newMessage.content,
@@ -176,12 +178,12 @@ export class AssistantService {
 
   mapCompanies(companies: Company[]) {
     return companies.map((company) => {
-      const { name, description, tagline } = company;
+      const { name, description, tagline, slug } = company;
 
       const skillNames = company.skills.map((skill) => skill.name).join(', ');
       const industryName = company.industry?.nameHr;
 
-      return `Name: ${name}. Description: ${description}. Tagline: ${tagline}. Industry: ${industryName}. Specialites: ${skillNames}`;
+      return `Name: ${name}. Slug: ${slug}. Description: ${description}. Tagline: ${tagline}. Industry: ${industryName}. Specialites: ${skillNames}`;
     });
   }
 }
