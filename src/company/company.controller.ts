@@ -59,4 +59,10 @@ export class CompanyController {
   getInfo(@Request() req: any) {
     return this.companyService.getInfo(req.account);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('slug/:companySlug/user')
+  fetchWithSub(@Request() req: any, @Param(':companySlug') slug: string) {
+    return this.companyService.findWithSub(slug, req.account);
+  }
 }

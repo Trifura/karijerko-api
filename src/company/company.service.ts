@@ -169,4 +169,22 @@ export class CompanyService {
   async getInfo(account: Account) {
     return this.findOne(account.company.id);
   }
+
+  async findWithSub(slug: string, account: Account) {
+    const company = await this.companyRepository.findOne({
+      where: { slug },
+      relations: ['industry', 'companySize', 'skills', 'subscribers'],
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with Slug ${slug} not found`);
+    }
+
+    // Check if the user is subscribed
+    const isSubscribed = company.subscribers.some(
+      (subscriber) => subscriber.id === account.user.id,
+    );
+
+    return { ...company, isSubscribed, subscribers: undefined };
+  }
 }
