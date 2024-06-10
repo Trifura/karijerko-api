@@ -171,6 +171,7 @@ export class CompanyService {
   }
 
   async findWithSub(slug: string, account: Account) {
+    console.log(slug);
     const company = await this.companyRepository.findOne({
       where: { slug },
       relations: ['industry', 'companySize', 'skills', 'subscribers'],

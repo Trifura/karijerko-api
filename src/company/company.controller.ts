@@ -62,7 +62,7 @@ export class CompanyController {
 
   @UseGuards(AuthGuard)
   @Get('slug/:companySlug/user')
-  fetchWithSub(@Request() req: any, @Param(':companySlug') slug: string) {
+  fetchWithSub(@Request() req: any, @Param('companySlug') slug: string) {
     return this.companyService.findWithSub(slug, req.account);
   }
 }
