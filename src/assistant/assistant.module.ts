@@ -8,13 +8,14 @@ import { AssistantMessage } from './entities/assistant_message.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AccountModule } from '../account/account.module';
+import { GeneralMessage } from './entities/general_message.entity';
 
 @Module({
   imports: [
     CompanyModule,
     OpenAIModule,
     AccountModule,
-    TypeOrmModule.forFeature([AssistantMessage]),
+    TypeOrmModule.forFeature([AssistantMessage, GeneralMessage]),
     JwtModule.registerAsync({
       imports: [ConfigModule.forRoot()],
       inject: [ConfigService],

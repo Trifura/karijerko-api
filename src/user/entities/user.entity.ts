@@ -14,6 +14,7 @@ import { UserLanguage } from '../../user-language/entities/user-language.entity'
 import { Education } from '../../education/entities/education.entity';
 import { Profile } from '../../profile/entities/profile.entity';
 import { Company } from '../../company/entities/company.entity';
+import { GeneralMessage } from '../../assistant/entities/general_message.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -41,6 +42,9 @@ export class User extends BaseEntity {
     (assistantMessage) => assistantMessage.user,
   )
   assistantMessages: AssistantMessage[];
+
+  @OneToMany(() => GeneralMessage, (generalMessage) => generalMessage.user)
+  generalMessages: GeneralMessage[];
 
   @OneToMany(() => UserLanguage, (userLanguage) => userLanguage.user)
   languages: UserLanguage[];

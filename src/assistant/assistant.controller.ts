@@ -10,6 +10,7 @@ import {
 import { AssistantService } from './assistant.service';
 import { AuthGuard } from '../auth/guards/Auth.guard';
 import { CreateAssistantMessageDto } from './dto/create-assistant-message.dto';
+import { CreateGeneralMessageDto } from './dto/create-general-message.dto';
 
 @Controller('assistant')
 export class AssistantController {
@@ -40,5 +41,23 @@ export class AssistantController {
   @Get('companies')
   fetchCompanies(@Request() req: any) {
     return this.assistantService.fetchCompanies(req.account.user.id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('general-message')
+  sendGeneralMessage(
+    @Request() req: any,
+    @Body() createMessageDto: CreateGeneralMessageDto,
+  ) {
+    return this.assistantService.sendGeneralMessage(
+      createMessageDto,
+      req.account.user,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('general-message')
+  fetchGeneralMessages(@Request() req: any) {
+    return this.assistantService.fetchGeneralMessages(req.account.user.id);
   }
 }

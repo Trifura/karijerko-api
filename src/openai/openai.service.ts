@@ -4,6 +4,7 @@ import { ChatCompletion } from 'openai/resources';
 import { ConfigService } from '@nestjs/config';
 import ChatCompletionMessageParam = OpenAI.ChatCompletionMessageParam;
 import { AssistantMessage } from '../assistant/entities/assistant_message.entity';
+import { GeneralMessage } from '../assistant/entities/general_message.entity';
 
 @Injectable()
 export class OpenAIService {
@@ -20,7 +21,7 @@ export class OpenAIService {
   async chatGptRequest(
     prompt: string,
     systemPrompt: string,
-    messages?: AssistantMessage[],
+    messages?: AssistantMessage[] | GeneralMessage[],
   ): Promise<string> {
     try {
       // Convert message history to the format expected by the OpenAI API
