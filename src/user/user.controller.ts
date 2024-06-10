@@ -38,4 +38,9 @@ export class UserController {
   fetchSubscriptions(@Request() req: any) {
     return this.userService.getSubscribedCompanies(req.account.user.id);
   }
+
+  @Get('public/:userSlug')
+  fetchPublic(@Param('userSlug') userSlug: number) {
+    return this.userService.fetchPublic(userSlug);
+  }
 }

@@ -102,4 +102,17 @@ export class ProfileService {
 
     return await this.profileRepository.remove(profile);
   }
+
+  async fetchPublicProfile(id: number) {
+    const profile = await this.profileRepository.findOne({
+      where: { id },
+      relations: ['projects', 'projects.contents', 'projects.skills'],
+    });
+
+    if (!profile) {
+      throw new NotFoundException(`Profile with id ${id} not found`);
+    }
+
+    return profile;
+  }
 }

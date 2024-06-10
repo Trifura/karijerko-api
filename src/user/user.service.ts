@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,6 +13,7 @@ import { ProfileService } from '../profile/profile.service';
 import { Project } from '../project/entities/project.entity';
 import { CompanyService } from '../company/company.service';
 import { Company } from '../company/entities/company.entity';
+import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,8 @@ export class UserService {
     private userRepository: Repository<User>,
     @InjectRepository(Company)
     private companyRepository: Repository<Company>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
     private profileService: ProfileService,
     private companyService: CompanyService,
   ) {}
@@ -111,5 +115,18 @@ export class UserService {
     });
 
     return Array.from(skillsMap.values());
+  }
+
+  async fetchPublic(userSlug: number) {
+    return this.userRepository.findOne({
+      where: { id: userSlug },
+      relations: [
+        'languages',
+        'languages.language',
+        'educations',
+        'profiles',
+        'profiles.projects',
+      ],
+    });
   }
 }

@@ -62,4 +62,9 @@ export class ProfileController {
   remove(@Request() req: any, @Param('id') id: string) {
     return this.profileService.remove(req.account, +id);
   }
+
+  @Get('public/:profileId')
+  fetchPublicProfile(@Param('profileId') profileId: number) {
+    return this.profileService.fetchPublicProfile(profileId);
+  }
 }
