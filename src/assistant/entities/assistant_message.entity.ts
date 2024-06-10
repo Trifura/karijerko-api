@@ -22,12 +22,17 @@ export class AssistantMessage extends BaseEntity {
   @Column({ type: 'enum', enum: AssistantMessageRole })
   role: AssistantMessageRole;
 
-  // TODO: what to do if company is removed??
-  @ManyToOne(() => Company, (company) => company.assistantMessages)
+  @ManyToOne(() => Company, (company) => company.assistantMessages, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @ManyToOne(() => User, (user) => user.assistantMessages)
+  @ManyToOne(() => User, (user) => user.assistantMessages, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
