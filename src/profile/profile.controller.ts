@@ -10,6 +10,7 @@ import {
   Request,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -31,6 +32,9 @@ export class ProfileController {
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Request() req: any) {
+    if (req.account.role !== 'user') {
+      return new UnauthorizedException();
+    }
     return this.profileService.findAll(req.account);
   }
 
