@@ -8,6 +8,9 @@ import { IndustryService } from '../industry/industry.service';
 import { CompanySizeService } from '../company_size/company_size.service';
 import { QueryCompanyDto } from './dto/query-company.dto';
 import { Skill } from '../skill/entities/skill.entity';
+import { Account } from '../account/entities/account.entity';
+import { UpdateCompanyInfoDto } from './dto/update-company-info.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class CompanyService {
@@ -145,5 +148,21 @@ export class CompanyService {
       .orderBy('skillCount', 'DESC');
 
     return await query.getMany();
+  }
+
+  async updateInfo(
+    account: Account,
+    updateCompanyInfoDto: UpdateCompanyInfoDto,
+  ) {
+    const company = await this.findOne(account.company.id);
+
+    company.slug = slugify(updateCompanyInfoDto.name, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
+
+    this.companyRepository.merge(company, updateCompanyInfoDto);
+
+    return this.companyRepository.save(company);
   }
 }
