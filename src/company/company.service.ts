@@ -165,4 +165,8 @@ export class CompanyService {
 
     return this.companyRepository.save(company);
   }
+
+  async getInfo(account: Account) {
+    return this.findOne(account.company.id);
+  }
 }

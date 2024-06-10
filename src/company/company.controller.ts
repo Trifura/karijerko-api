@@ -53,4 +53,10 @@ export class CompanyController {
   ) {
     return this.companyService.updateInfo(req.account, updateCompanyInfoDto);
   }
+
+  @UseGuards(AuthGuard)
+  @Patch('me/info')
+  getInfo(@Request() req: any) {
+    return this.companyService.getInfo(req.account);
+  }
 }
