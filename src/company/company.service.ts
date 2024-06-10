@@ -113,7 +113,7 @@ export class CompanyService {
   async findBySlug(slug: string) {
     const company = await this.companyRepository.findOne({
       where: { slug },
-      relations: ['industry', 'companySize'],
+      relations: ['industry', 'companySize', 'skills'],
     });
     if (!company) {
       throw new NotFoundException(`Company with slug ${slug} not found`);
