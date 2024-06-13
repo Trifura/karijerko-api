@@ -31,6 +31,9 @@ export class User extends BaseEntity {
   @Column({ name: 'last_name' })
   lastName: string;
 
+  @Column({ unique: true, nullable: true })
+  slug: string;
+
   @Column({ name: 'profile_picture', nullable: true })
   profilePicture: string;
 

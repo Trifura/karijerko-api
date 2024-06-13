@@ -209,10 +209,16 @@ export class AuthService {
     isVerified: boolean,
     authProvider?: AuthProviderDto,
   ) {
+    const slug = slugify(`${firstName} ${lastName}`, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
+
     return await this.createAccountTransactional(async (queryRunner) => {
       const user = await queryRunner.manager.save(User, {
         firstName,
         lastName,
+        slug,
         profilePicture,
       });
       const account = await queryRunner.manager.save(Account, {
@@ -329,6 +335,7 @@ export class AuthService {
       role: account.role,
       location: account.user.city,
       profiles: account.user.profiles || [],
+      slug: account.user.slug,
     };
   }
 

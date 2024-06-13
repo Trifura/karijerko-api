@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -117,9 +116,9 @@ export class UserService {
     return Array.from(skillsMap.values());
   }
 
-  async fetchPublic(userSlug: number) {
-    return this.userRepository.findOne({
-      where: { id: userSlug },
+  async fetchPublic(userSlug: string) {
+    return await this.userRepository.findOne({
+      where: { slug: userSlug },
       relations: [
         'languages',
         'languages.language',

@@ -40,7 +40,7 @@ export class UserController {
   }
 
   @Get('public/:userSlug')
-  fetchPublic(@Param('userSlug') userSlug: number) {
+  fetchPublic(@Param('userSlug') userSlug: string) {
     return this.userService.fetchPublic(userSlug);
   }
 }
