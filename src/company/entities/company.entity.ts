@@ -58,6 +58,9 @@ export class Company extends BaseEntity {
   @ManyToOne(() => Industry, (industry) => industry.companies)
   industry: Industry;
 
+  @Column({ default: false })
+  isViewable: boolean;
+
   @ManyToOne(() => CompanySize, (companySize) => companySize.companies)
   companySize: CompanySize;
 

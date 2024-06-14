@@ -52,7 +52,8 @@ export class CompanyService {
       .createQueryBuilder('company')
       .leftJoinAndSelect('company.industry', 'industry')
       .leftJoinAndSelect('company.companySize', 'companySize')
-      .leftJoinAndSelect('company.skills', 'skills');
+      .leftJoinAndSelect('company.skills', 'skills')
+      .andWhere('company.isViewable = true');
 
     if (search) {
       qb.andWhere(
@@ -126,6 +127,7 @@ export class CompanyService {
 
     const query = this.companyRepository
       .createQueryBuilder('company')
+      .where('company.isViewable = true')
       .leftJoinAndSelect(
         'company.skills',
         'skill',
