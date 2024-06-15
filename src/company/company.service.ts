@@ -11,6 +11,8 @@ import { Skill } from '../skill/entities/skill.entity';
 import { Account } from '../account/entities/account.entity';
 import { UpdateCompanyInfoDto } from './dto/update-company-info.dto';
 import slugify from 'slugify';
+import { SendEmailDto } from './dto/send-email.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class CompanyService {
@@ -19,6 +21,7 @@ export class CompanyService {
     private companyRepository: Repository<Company>,
     private industryService: IndustryService,
     private companySizeService: CompanySizeService,
+    private mailService: MailService,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto) {
@@ -188,5 +191,31 @@ export class CompanyService {
     );
 
     return { ...company, isSubscribed, subscribers: undefined };
+  }
+
+  async sendSubscriberEmails(account: Account, emailData: SendEmailDto) {
+    const company = await this.companyRepository.findOne({
+      where: { id: account.company.id },
+      relations: ['subscribers', 'subscribers.accounts'],
+    });
+
+    if (!company) {
+      throw new NotFoundException(
+        `Company with ID ${account.company.id} not found`,
+      );
+    }
+
+    const emails = company.subscribers.map(
+      (subscriber) => subscriber.accounts[0].email,
+    );
+
+    await this.mailService.sendSubscriberEmails(
+      emails,
+      company,
+      emailData.subject,
+      emailData.content,
+    );
+
+    return { success: true, message: 'Emails sent successfully' };
   }
 }

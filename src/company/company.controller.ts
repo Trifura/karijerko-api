@@ -15,6 +15,7 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { QueryCompanyDto } from './dto/query-company.dto';
 import { AuthGuard } from '../auth/guards/Auth.guard';
 import { UpdateCompanyInfoDto } from './dto/update-company-info.dto';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -64,5 +65,11 @@ export class CompanyController {
   @Get('slug/:companySlug/user')
   fetchWithSub(@Request() req: any, @Param('companySlug') slug: string) {
     return this.companyService.findWithSub(slug, req.account);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('send-emails')
+  sendEmails(@Request() req: any, @Body() emailData: SendEmailDto) {
+    return this.companyService.sendSubscriberEmails(req.account, emailData);
   }
 }

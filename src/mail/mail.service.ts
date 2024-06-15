@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { Company } from '../company/entities/company.entity';
 
 @Injectable()
 export class MailService {
@@ -44,5 +45,28 @@ export class MailService {
         companyName,
       },
     });
+  }
+
+  async sendSubscriberEmails(
+    emails: string[],
+    company: Company,
+    subject: string,
+    content: string,
+  ) {
+    await Promise.all(
+      emails.map((email) => {
+        return this.mailerService.sendMail({
+          to: email,
+          subject: subject,
+          template: './subscriber-email',
+          context: {
+            companyName: company.name,
+            logoUrl: company.profilePicture,
+            content,
+            subject,
+          },
+        });
+      }),
+    );
   }
 }

@@ -7,6 +7,7 @@ import { IndustryModule } from '../industry/industry.module';
 import { CompanySizeModule } from '../company_size/company_size.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AccountModule } from '../account/account.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AccountModule } from '../account/account.module';
     CompanySizeModule,
     JwtModule,
     AccountModule,
+    MailModule,
   ],
   controllers: [CompanyController],
   providers: [CompanyService],
